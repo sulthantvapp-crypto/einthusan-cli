@@ -15,15 +15,16 @@ def get_stream_url(path):
         }), 400
 
     try:
-        # ഒറിജിനൽ എൻഡ്പോയിന്റ് റിക്വസ്റ്റ്
-        api_url = 'https://einthusan-cli.herokuapp.com/api/info?url=' + query_url
-        response = requests.get(api_url).json()
+        # ഹെറോകു ഡിപെൻഡൻസി ഒഴിവാക്കി നേരിട്ടുള്ള ഹാൻഡ്ലിംഗ്
+        # ഇവിടെ ഒറിജിനൽ Einthusan പേജിൽ നിന്ന് ഡാറ്റ എടുക്കാനുള്ള ലോജിക് സെറ്റ് ചെയ്യാം
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        r = requests.get(query_url, headers=headers)
         
-        stream_url = response['info']['formats'][0]['url']
-        
+        # തൽക്കാലത്തേക്ക് ടെസ്റ്റ് ചെയ്യാൻ റെസ്പോൺസ് സ്റ്റാറ്റസ് റിട്ടേൺ ചെയ്യുന്നു
         return jsonify({
             'status': 'success',
-            'url': stream_url
+            'target_url': query_url,
+            'http_status': r.status_code
         })
     except Exception as e:
         return jsonify({
